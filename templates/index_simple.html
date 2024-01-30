@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Chatbot Demo</title>
+</head>
+<body>
+    <h1>Simple Chatbot Demo</h1>
+    <div id="chat-container">
+        <div id="chat"></div>
+        <input type="text" id="user-input" placeholder="Type your message...">
+        <button onclick="sendMessage()">Send</button>
+    </div>
+
+    <script>
+        function sendMessage() {
+            var userMessage = document.getElementById("user-input").value;
+            document.getElementById("chat").innerHTML += "<p><strong>You:</strong> " + userMessage + "</p>";
+            
+            // Send user message to the server
+            fetch("/get_response", {
+                method: "POST",
+                body: new URLSearchParams({ user_message: userMessage }),
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                }
+            })
+            .then(response => response.text())
+            .then(data => {
+                // Display the custom response
+                document.getElementById("chat").innerHTML += "<p><strong>Bot:</strong> " + data + "</p>";
+            });
+
+            // Clear the input field
+            document.getElementById("user-input").value = "";
+        }
+    </script>
+</body>
+</html>
